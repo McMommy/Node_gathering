@@ -45,10 +45,25 @@ def full_auto(mag_size):
     global gun
     if gun == "smg" and ammo >= 10:
         ammo -= 9
-        print("Buddy: stop shooting so fast")
+        print("Buddy: why'd you blast me")
         print(f"you have {ammo} bullets left")
 
     elif gun != "smg":
+        print("wrong gun bud")
+    else:
+        print("not enough ammo")
+        reload(mag_size)
+
+
+def double_shot(mag_size):
+    global ammo
+    global gun
+    if gun == "shotgun" and ammo >= 2:
+        ammo -= 2
+        print("Buddy: stop shooting so fast")
+        print(f"you have {ammo} bullets left")
+        pass
+    elif gun != "shotgun":
         print("wrong gun bud")
     else:
         print("not enough ammo")
@@ -110,8 +125,8 @@ def choose_gun():
             print(f"you have {mag_size} bullets")
             return mag_size
         elif gun == "shotgun":
-            mag_size = 3
-            ammo = 3
+            mag_size = 2
+            ammo = 2
             print(f"you have {mag_size} shells")
             return mag_size
         elif gun == "exit":
@@ -126,7 +141,7 @@ def combat(mag_size):
     global gun
     command = ""
     while command != "exit":
-        command = input("(shoot) (fanning) (reload) (fullauto) (holster) (exit)\n")
+        command = input("(shoot) (fanning) (reload) (fullauto) (double) (holster) (exit)\n")
 
         if command == "shoot":
             shoot(mag_size)
@@ -136,6 +151,8 @@ def combat(mag_size):
             reload(mag_size)
         elif command == "fullauto":
             full_auto(mag_size)
+        elif command == "double":
+            double_shot(mag_size)
         elif command == "exit":
             print("Leaving the simulation")
             break
