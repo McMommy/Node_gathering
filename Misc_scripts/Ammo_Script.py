@@ -7,6 +7,16 @@
 
 #import random #rng backfire, addition
 
+class Gun():
+    def __init__(self, name, ammo, mag_size):
+        self.name = name
+        self.ammo = ammo
+        self.mag_size = mag_size
+
+revolver = Gun("revolver", 6, 6)
+smg = Gun("smg", 30, 30)
+shotgun = Gun("shotgun", 2, 2)
+
 
 empty = 0
 command = ""
@@ -79,7 +89,6 @@ def double_shot(mag_size):
         ammo -= 2
         print("Buddy: stop shooting so fast")
         print(f"you have {ammo} bullets left")
-        pass
     elif gun != "shotgun":
         print("wrong gun bud")
     else:
@@ -136,16 +145,19 @@ def choose_gun():
             ammo = 6
             print(f"you have {mag_size} bullets")
             return mag_size
+
         elif gun == "smg":
             mag_size = 30
             ammo = 30
             print(f"you have {mag_size} bullets")
             return mag_size
+
         elif gun == "shotgun":
             mag_size = 2
             ammo = 2
             print(f"you have {mag_size} shells")
             return mag_size
+
         elif gun == "exit":
             break
         else:
