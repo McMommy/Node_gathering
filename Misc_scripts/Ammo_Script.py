@@ -15,44 +15,39 @@ shotgun = Gun("shotgun", 2, 2)
 
 empty = 0
 command = ""
-gun = ""
 
 
 def start_game():
-    mag_size = choose_gun()
-    combat(mag_size)
+    active_gun = choose_gun()
+    combat(active_gun)
 
 
-def shoot(mag_size):
-    global ammo
-    global gun
-    if gun == "revolver" and ammo > empty:
-        print()
+def shoot(active_gun):
+    if active_gun == revolver and active_gun.ammo > empty:
         print("Buddy: ow, you shot me")
-        ammo -= 1
-        print(f"you have {ammo} bullets left")
+        active_gun.ammo -= 1
+        print(f"you have {active_gun.ammo} bullets left")
 
-    elif gun == "smg" and ammo > empty:
+    elif active_gun == smg and active_gun.ammo > empty:
         print("Buddy: ow, you shot me")
-        ammo -= 3
-        print(f"you have {ammo} bullets left")
+        active_gun.ammo -= 3
+        print(f"you have {active_gun.ammo} bullets left")
 
-    elif gun == "shotgun" and ammo > empty:
+    elif active_gun == shotgun and active_gun.ammo > empty:
         print("Buddy: ow, you shot me")
-        ammo -= 1
-        print(f"you have {ammo} shells left")
+        active_gun.ammo -= 1
+        print(f"you have {active_gun.ammo} shells left")
     else:
         print("Buddy: seems like you're outta ammo")
-        reload(mag_size)
+        reload(active_gun)
 
 
-def gun_text():
-    global gun
-    if gun == "revolver":
+def gun_text(active_gun):
+    if active_gun == revolver:
         print("(shoot) (reload) (fanning) (holster) (exit)\n")
-    elif gun == "smg":
+    elif active_gun == smg:
         print("(shoot) (reload) (fullauto) (holster) (exit)\n")
-    elif gun == "shotgun":
+    elif active_gun == shotgun:
         print("(shoot) (reload) (double) (holster) (exit)\n")
     else:
         print("???")
@@ -62,127 +57,112 @@ def bone_dye():
     pass
 
 
-def full_auto(mag_size):
-    global ammo
-    global gun
-    if gun == "smg" and ammo >= 10:
-        ammo -= 9
+def full_auto(active_gun):
+    if active_gun == smg and active_gun.ammo >= 9:
+        active_gun.ammo -= 9
         print("Buddy: why'd you blast me")
-        print(f"you have {ammo} bullets left")
+        print(f"you have {active_gun.ammo} bullets left")
 
-    elif gun != "smg":
+    elif active_gun != smg:
         print("wrong gun bud")
     else:
         print("not enough ammo")
-        reload(mag_size)
+        reload(active_gun)
 
 
-def double_shot(mag_size):
-    global ammo
-    global gun
-    if gun == "shotgun" and ammo >= 2:
-        ammo -= 2
+def double_shot(active_gun):
+    if active_gun == shotgun and active_gun.ammo >= 2:
+        active_gun.ammo -= 2
         print("Buddy: stop shooting so fast")
-        print(f"you have {ammo} bullets left")
-    elif gun != "shotgun":
+        print(f"you have {active_gun.ammo} bullets left")
+    elif active_gun != shotgun:
         print("wrong gun bud")
     else:
         print("not enough ammo")
-        reload(mag_size)
+        reload(active_gun)
 
 
-def fanning(mag_size):
-    global ammo
-    global gun
-    if gun == "revolver" and ammo > 1:
-        fired = ammo
+def fanning(active_gun):
+    if active_gun == revolver and active_gun.ammo > 1:
+        fired = active_gun.ammo
         print(f"Buddy: how did you shoot {fired} bullets at me so fast")
-        ammo = empty
-        print(f"you have {ammo} bullets left")
+        active_gun.ammo = empty
+        print(f"you have {active_gun.ammo} bullets left")
 
-    elif gun != "revolver":
+    elif active_gun != revolver:
         print("wrong gun bud")
     else:
         print("Buddy: seems like you're outta ammo")
-        reload(mag_size)
+        reload(active_gun)
 
 
-def reload(mag_size):
-    global ammo
-    global gun
-    if gun == "revolver" and ammo != mag_size:
-        loaded = mag_size - ammo
-        ammo = mag_size
+def reload(active_gun):
+    if active_gun == revolver and active_gun.ammo != active_gun.mag_size:
+        loaded = active_gun.mag_size - active_gun.ammo
+        active_gun.ammo = active_gun.mag_size
         print(f"you reloaded {loaded} bullets")
 
-    elif gun == "smg" and ammo != mag_size:
-        loaded = mag_size - ammo
-        ammo = mag_size
+    elif active_gun == smg and active_gun.ammo != active_gun.mag_size:
+        loaded = active_gun.mag_size - active_gun.ammo
+        active_gun.ammo = active_gun.mag_size
         print(f"you reloaded {loaded} bullets")
 
-    elif gun == "shotgun" and ammo != mag_size:
-        loaded = mag_size - ammo
-        ammo = mag_size
+    elif active_gun == shotgun and active_gun.ammo != active_gun.mag_size:
+        loaded = active_gun.mag_size - active_gun.ammo
+        active_gun.ammo = active_gun.mag_size
         print(f"you reloaded {loaded} shells")
     else:
         print("erm sigma gun's full")
 
 
 def choose_gun():
-    global ammo
-    global gun
-    gun = ""
-    while gun != "exit":
-        gun = input("choose a gun: (revolver), (smg), (shotgun).\n")
+    weapon = ""
+    while weapon != "exit":
+        weapon = input("choose a gun: (revolver), (smg), (shotgun).\n")
 
-        if gun == "revolver":
-            mag_size = 6
-            ammo = 6
-            print(f"you have {mag_size} bullets")
-            return mag_size
+        if weapon == "revolver":
+            active_gun = revolver
+            print(f"you have {active_gun.mag_size} bullets")
+            return active_gun
 
-        elif gun == "smg":
-            mag_size = 30
-            ammo = 30
-            print(f"you have {mag_size} bullets")
-            return mag_size
+        elif weapon == "smg":
+            active_gun = smg
+            print(f"you have {active_gun.mag_size} bullets")
+            return active_gun
 
-        elif gun == "shotgun":
-            mag_size = 2
-            ammo = 2
-            print(f"you have {mag_size} shells")
-            return mag_size
+        elif weapon == "shotgun":
+            active_gun = shotgun
+            print(f"you have {active_gun.mag_size} shells")
+            return active_gun
 
-        elif gun == "exit":
+        elif weapon == "exit":
             break
         else:
             print("Choose a gun first, or (exit)")
-    return mag_size
+    return active_gun
 
 
-def combat(mag_size):
-    global ammo
-    global gun
+def combat(active_gun):
     command = ""
     while command != "exit":
-        gun_text()
+        gun_text(active_gun)
         command = input("")
 
         if command == "shoot":
-            shoot(mag_size)
-        elif command == "fanning":
-            fanning(mag_size)
+            shoot(active_gun)
+        elif command == "fanning" or command == "fan":
+            fanning(active_gun)
         elif command == "reload":
-            reload(mag_size)
-        elif command == "fullauto":
-            full_auto(mag_size)
+            reload(active_gun)
+        elif command == "fullauto" or command == "full auto":
+            full_auto(active_gun)
         elif command == "double":
-            double_shot(mag_size)
+            double_shot(active_gun)
         elif command == "exit":
             print("Leaving the simulation")
             break
         elif command == "holster":
-            mag_size = choose_gun()
+            active_gun = choose_gun()
         else:
             print("What did you say?")
 
