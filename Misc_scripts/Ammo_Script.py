@@ -1,10 +1,5 @@
 
 #goal of this is to make this again in c++
-#make full_auto func!!!
-#get rid of global ammo, set as parameter, ammo = shoot(ammo), return ammo
-
-#add only options for that certain gun can use, ex fanning revolver, smg - full auto
-
 #import random #rng backfire, addition
 
 class Gun():
