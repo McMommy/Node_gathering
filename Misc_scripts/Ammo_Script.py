@@ -22,6 +22,7 @@ def shoot(mag_size):
     global ammo
     global gun
     if gun == "revolver" and ammo > empty:
+        print()
         print("Buddy: ow, you shot me")
         ammo -= 1
         print(f"you have {ammo} bullets left")
@@ -38,6 +39,22 @@ def shoot(mag_size):
     else:
         print("Buddy: seems like you're outta ammo")
         reload(mag_size)
+
+
+def gun_text():
+    global gun
+    if gun == "revolver":
+        print("(shoot) (reload) (fanning) (holster) (exit)\n")
+    elif gun == "smg":
+        print("(shoot) (reload) (fullauto) (holster) (exit)\n")
+    elif gun == "shotgun":
+        print("(shoot) (reload) (double) (holster) (exit)\n")
+    else:
+        print("???")
+
+
+def bone_dye():
+    pass
 
 
 def full_auto(mag_size):
@@ -141,7 +158,8 @@ def combat(mag_size):
     global gun
     command = ""
     while command != "exit":
-        command = input("(shoot) (fanning) (reload) (fullauto) (double) (holster) (exit)\n")
+        gun_text()
+        command = input("")
 
         if command == "shoot":
             shoot(mag_size)
@@ -163,4 +181,3 @@ def combat(mag_size):
 
 
 start_game()
-
