@@ -1,4 +1,6 @@
 #creating the mining system that ethan wanted
+#fixing git
+
 
 import time
 import random
