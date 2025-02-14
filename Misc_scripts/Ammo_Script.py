@@ -1,16 +1,23 @@
 
 #goal of this is to make this again in c++
+#make more guns, should be ez after the class system.
+#add a player class, could make nested classes, might be harder.
 #import random #rng backfire, addition
+#add info for the class, do the amouint of bullets shot per time shoot(). makes it easier to impliment less elif statements and make the code more modular. this can be sick.
+#add a way to store the current info for ammo in gun, like if i holster with 10 bullets it stays at 10 when i  get it back out
 
 class Gun():
-    def __init__(self, name, ammo, mag_size):
+    def __init__(self, name, ammo, mag_size, burst, ammo_type):
         self.name = name
         self.ammo = ammo
         self.mag_size = mag_size
+        self.burst = burst
+        self.ammo_type = ammo_type
 
-revolver = Gun("revolver", 6, 6)
-smg = Gun("smg", 30, 30)
-shotgun = Gun("shotgun", 2, 2)
+#uses active_gun, to see what gun is currently being used
+revolver = Gun("revolver", 6, 6, 1, "bullets")
+smg = Gun("smg", 30, 30, 3, "bullets")
+shotgun = Gun("shotgun", 2, 2, 1, "shells")
 
 
 empty = 0
@@ -23,20 +30,10 @@ def start_game():
 
 
 def shoot(active_gun):
-    if active_gun == revolver and active_gun.ammo > empty:
-        print("Buddy: ow, you shot me")
-        active_gun.ammo -= 1
-        print(f"you have {active_gun.ammo} bullets left")
-
-    elif active_gun == smg and active_gun.ammo > empty:
-        print("Buddy: ow, you shot me")
-        active_gun.ammo -= 3
-        print(f"you have {active_gun.ammo} bullets left")
-
-    elif active_gun == shotgun and active_gun.ammo > empty:
-        print("Buddy: ow, you shot me")
-        active_gun.ammo -= 1
-        print(f"you have {active_gun.ammo} shells left")
+    if active_gun.ammo >= active_gun.burst:
+        active_gun.ammo -= active_gun.burst
+        print(f"Buddy: you shot me {active_gun.burst} times")
+        print(f"you have {active_gun.ammo} {active_gun.ammo_type} left")
     else:
         print("Buddy: seems like you're outta ammo")
         reload(active_gun)
@@ -59,10 +56,9 @@ def bone_dye():
 
 def full_auto(active_gun):
     if active_gun == smg and active_gun.ammo >= 9:
-        active_gun.ammo -= 9
+        active_gun.ammo -= active_gun.burst
         print("Buddy: why'd you blast me")
         print(f"you have {active_gun.ammo} bullets left")
-
     elif active_gun != smg:
         print("wrong gun bud")
     else:
@@ -71,8 +67,8 @@ def full_auto(active_gun):
 
 
 def double_shot(active_gun):
-    if active_gun == shotgun and active_gun.ammo >= 2:
-        active_gun.ammo -= 2
+    if active_gun == shotgun and active_gun.ammo > active_gun.burst:
+        active_gun.ammo -= active_gun.burst
         print("Buddy: stop shooting so fast")
         print(f"you have {active_gun.ammo} bullets left")
     elif active_gun != shotgun:
@@ -88,7 +84,6 @@ def fanning(active_gun):
         print(f"Buddy: how did you shoot {fired} bullets at me so fast")
         active_gun.ammo = empty
         print(f"you have {active_gun.ammo} bullets left")
-
     elif active_gun != revolver:
         print("wrong gun bud")
     else:
