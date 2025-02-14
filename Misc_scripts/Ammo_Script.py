@@ -56,7 +56,7 @@ def bone_dye():
 
 def full_auto(active_gun):
     if active_gun == smg and active_gun.ammo >= 9:
-        active_gun.ammo -= active_gun.burst
+        active_gun.ammo -= 9
         print("Buddy: why'd you blast me")
         print(f"you have {active_gun.ammo} bullets left")
     elif active_gun != smg:
@@ -68,8 +68,8 @@ def full_auto(active_gun):
 
 def double_shot(active_gun):
     if active_gun == shotgun and active_gun.ammo > active_gun.burst:
-        active_gun.ammo -= active_gun.burst
-        print("Buddy: stop shooting so fast")
+        active_gun.ammo -= 2
+        print("Buddy: both at once!?")
         print(f"you have {active_gun.ammo} bullets left")
     elif active_gun != shotgun:
         print("wrong gun bud")
@@ -92,22 +92,12 @@ def fanning(active_gun):
 
 
 def reload(active_gun):
-    if active_gun == revolver and active_gun.ammo != active_gun.mag_size:
+    if active_gun.ammo != active_gun.mag_size:
         loaded = active_gun.mag_size - active_gun.ammo
         active_gun.ammo = active_gun.mag_size
-        print(f"you reloaded {loaded} bullets")
-
-    elif active_gun == smg and active_gun.ammo != active_gun.mag_size:
-        loaded = active_gun.mag_size - active_gun.ammo
-        active_gun.ammo = active_gun.mag_size
-        print(f"you reloaded {loaded} bullets")
-
-    elif active_gun == shotgun and active_gun.ammo != active_gun.mag_size:
-        loaded = active_gun.mag_size - active_gun.ammo
-        active_gun.ammo = active_gun.mag_size
-        print(f"you reloaded {loaded} shells")
+        print(f"you reloaded {loaded} {active_gun.ammo_type}")
     else:
-        print("erm sigma gun's full")
+        print("Buddy: You can't load a full mag")
 
 
 def choose_gun():
