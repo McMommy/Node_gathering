@@ -12,11 +12,18 @@ class Player():
         self.health = health
         self.stamina = stamina
         self.max_stamina = max_stamina
-        self.inventory = {}
+        self.inventory = {
+            "iron": 0,
+            "copper": 0,
+            "stone": 0,
+            "oak": 0,
+            "chesnut": 0
+        }
 
 
 class Nodes():
-    def __init__(self, name, health, breaking_power, spawn_chance):
+    def __init__(self, node_type, name, health, breaking_power, spawn_chance):
+        self.node_type = node_type
         self.name = name
         self.health = health
         self.breaking_power = breaking_power
@@ -24,23 +31,23 @@ class Nodes():
 
 
 class Tools():
-    def __init__(self, tool_type, name, damage, breakingpower,):
+    def __init__(self, tool_type, name, damage, breaking_power,):
         self.tool_type = tool_type
         self.name = name
         self.damage = damage
-        self.breakingpower = breakingpower
+        self.breaking_power = breaking_power
 
 #player
 player1 = Player("name", 100, 100, 100)
 
 #nodes
 #ores
-iron = Nodes("iron", 60, 2, 1)
-copper = Nodes("copper", 50, 1, 1)
-stone = Nodes("stone", 40, 0, 1)
+iron = Nodes("ore", "iron", 60, 2, 1)
+copper = Nodes("ore", "copper", 50, 1, 1)
+stone = Nodes("ore", "stone", 40, 0, 1)
 #wood
-oak = Nodes("oak", 50, 1, 1)
-chesnut = Nodes("chesnut", 30, 0, 1)
+oak = Nodes("tree", "oak", 50, 1, 1)
+chesnut = Nodes("tree", "chesnut", 30, 0, 1)
 
 #tools
 iron_pickaxe = Tools("pickaxe", "iron_pickaxe", 10, 5)
@@ -56,23 +63,57 @@ command = ""
 
 def start_game():
     current_tool = choose_tool()
-    work(current_tool)
+    current_node = spawn_node()
+    work(current_tool, current_node)
 
 
-def mine(current_tool):
+def mine(current_tool, current_node) :
     pass
-   # if current_tool.tool_type == "pickaxe" and current_tool.breaking_power >= current_node.breaking_power:
-      #  current_node.health -= current_tool.damage
+    if current_tool.tool_type == "pickaxe" and current_tool.breaking_power >= current_node.breaking_power:
+        current_node.health -= current_tool.damage
+        print(f"this ore has {current_node.health} health left")
 
-
-def chop(current_tool):
+def chop(current_tool, current_node):
     pass
-    #if current_tool.tool_type == "axe" and current_tool.breaking_power >= :
-     #   current_node.health -= current_tool.damage
+    if current_tool.tool_type == "axe" and current_tool.breaking_power >= current_node.breaking_power:
+        current_node.health -= current_tool.damage
+        print(f"this tree has {current_node.health} health left")
+
+
+def node_destroyed(current_node):
+    if current_node.health <= 0:
+        current_node.health = 0
+        print(f"you broke {current_node.name} {current_node.node_type}")
+        current_node = spawn_node()
+        print("your walking to your next node")
+    else:
+        print(f"{current_node.name} has {current_node.health} health left")
+
+
+
+
+    current_node = spawn_node(current_node)
+    pass
+
+
+
+def collect_resource(current_node):
+    if current_node.node_type == "tree" and current_node.health <= 0:
+        pass
+    elif current_node.node_type == "ore" and current_node.health <= 0:
+        pass
+
+
+def spawn_node():
+    farmable = [iron, copper, stone, oak, chesnut]
+    current_node = random.choice(farmable)
+    print(f"you find a {current_node.node_type}")
+    return current_node
 
 
 def node_info():
     pass
+
 
 
 def text(current_tool):
@@ -99,6 +140,9 @@ def rest():
 def access_inventory(current_tool):
     print(player1.inventory)
 
+
+def craft():
+    pass
 
 def choose_tool():
     tool = ""
@@ -131,17 +175,18 @@ def swap_tool(current_tool):
 
 
 
-def work(current_tool):
+def work(current_tool, current_node):
     command = ""
     while command != "home" or command != "exit":
         text(current_tool)
+        #current_node = spawn_node() #FIX THIS IT RESETS THE ORE EVERYTIME
         command = input()
-        if command == "swap" or command == "swap tool" or command == "swaptool":
+        if command in {"swap", "swap tool", "swaptool"}: #tring a different way other than spamming, or statements. "in" checks each value to see if one matches
             current_tool = swap_tool(current_tool)
         elif command == "mine":
-            mine(current_tool)
+            mine(current_tool, current_node)
         elif command == "chop":
-            chop(current_tool)
+            chop(current_tool, current_node)
         elif command == "rest":
             rest()
         elif command == "inv" or command == "inventory":
@@ -153,6 +198,7 @@ def work(current_tool):
             print("Invalid")
 
         
+
 
 
 
