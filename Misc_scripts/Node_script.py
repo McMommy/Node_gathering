@@ -7,11 +7,13 @@ import random
 
 
 class Player():
-    def __init__(self, name, health, stamina, max_stamina):
+    def __init__(self, name, health, mining_stamina, logging_stamina, max_mining_stamina, max_logging_stamina):
         self.name = name
         self.health = health
-        self.stamina = stamina
-        self.max_stamina = max_stamina
+        self.mining_stamina = mining_stamina
+        self.logging_stamina = logging_stamina
+        self.max_mining_stamina = max_mining_stamina
+        self.max_logging_stamina = max_logging_stamina
         self.inventory = {
             "iron": 0,
             "copper": 0,
@@ -40,7 +42,9 @@ class Tools():
         self.breaking_power = breaking_power
 
 #player
-player1 = Player("name", 100, 100, 100)
+lumberjack = Player("", 100, 60, 160, 60, 160)
+miner = Player("", 100, 160, 60, 160, 60)
+
 
 #nodes
 #ores
@@ -73,21 +77,25 @@ def mine(current_tool, current_node) :
     pass
     if current_tool.tool_type == "pickaxe" and player1.stamina > 0 and current_tool.breaking_power >= current_node.breaking_power:
         current_node.health -= current_tool.damage
-        node_destroyed(current_node)
+        return node_destroyed(current_node)
     #elif player1.stamina <= 0:
         #print("You're out of stamina, try taking a quick rest")
     else:
         print("can't do that right now")
+    return current_node
+
+
 def chop(current_tool, current_node):
     pass
     if current_tool.tool_type == "axe" and player1.stamina > 0 and current_tool.breaking_power >= current_node.breaking_power:
         current_node.health -= current_tool.damage
         player1.stamina -= 10
-        node_destroyed(current_node)
+        return node_destroyed(current_node)
     #elif player1.stamina <= 0:
         #print("You're out of stamina, try taking a quick rest")
     else:
         print("can't do that right now")
+    return current_node
 
 
 def node_destroyed(current_node):
@@ -96,10 +104,10 @@ def node_destroyed(current_node):
         current_node.health = current_node.max_health
         print(f"you broke {current_node.name} {current_node.node_type}")
         print("your walking to your next node")
-        current_node = spawn_node()
+        return spawn_node()
     else:
         print(f"{current_node.name} has {current_node.health} health left")
-
+    return current_node
 
 
 
@@ -113,11 +121,13 @@ def collect_resource(current_node):
         print("go to collect_resource()")
 
 
+
 def spawn_node():
     farmable = [iron, copper, stone, oak, chesnut]
     current_node = random.choice(farmable)
     print(f"you find a {current_node.name} node")
     return current_node
+
 
 
 def node_info():
@@ -134,8 +144,10 @@ def text(current_tool):
         print("How did you obtain this")
 
 
-def choose_name():
+
+def choose_character():
     pass
+
 
 
 #make it so i get food from trees, then can eat the food for stamina, return back to eat()
@@ -155,6 +167,7 @@ def access_inventory(current_tool):
 
 def craft():
     pass
+
 
 def choose_tool():
     tool = ""
@@ -189,16 +202,16 @@ def swap_tool(current_tool):
 
 def work(current_tool, current_node):
     command = ""
-    while command != "home" or command != "exit":
+    while command != "home":
         text(current_tool)
         #current_node = spawn_node() #FIX THIS IT RESETS THE ORE EVERYTIME
         command = input()
         if command in {"swap", "swap tool", "swaptool"}: #tring a different way other than spamming, or statements. "in" checks each value to see if one matches
             current_tool = swap_tool(current_tool)
         elif command == "mine":
-            mine(current_tool, current_node)
+            current_node = mine(current_tool, current_node)
         elif command == "chop":
-            chop(current_tool, current_node)
+            current_node = chop(current_tool, current_node)
         elif command == "rest":
             rest()
         elif command == "inv":
