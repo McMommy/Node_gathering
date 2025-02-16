@@ -63,63 +63,66 @@ iron_axe = Tools("axe", "iron_axe", 10, 5)
 
 #current_tool
 command = ""
-
+character = ""
 
 
 
 def start_game():
+    character = choose_character()
     current_tool = choose_tool()
     current_node = spawn_node()
-    work(current_tool, current_node)
+    work(current_tool, current_node, character)
 
 
-def mine(current_tool, current_node) :
+def mine(current_tool, current_node, character) :
     pass
-    if current_tool.tool_type == "pickaxe" and player1.stamina > 0 and current_tool.breaking_power >= current_node.breaking_power:
+    if current_tool.tool_type == "pickaxe" and character.mining_stamina > 0 and current_tool.breaking_power >= current_node.breaking_power:
         current_node.health -= current_tool.damage
-        return node_destroyed(current_node)
-    #elif player1.stamina <= 0:
-        #print("You're out of stamina, try taking a quick rest")
+        return node_destroyed(current_node, character)
+    elif character.mining_stamina <= 0:
+        print("You're out of stamina, try taking a quick rest")
     else:
         print("can't do that right now")
-    return current_node
+    return current_node, character
 
 
-def chop(current_tool, current_node):
+def chop(current_tool, current_node, character):
     pass
-    if current_tool.tool_type == "axe" and player1.stamina > 0 and current_tool.breaking_power >= current_node.breaking_power:
+    if current_tool.tool_type == "axe" and character.logging_stamina > 0 and current_tool.breaking_power >= current_node.breaking_power:
         current_node.health -= current_tool.damage
-        player1.stamina -= 10
-        return node_destroyed(current_node)
-    #elif player1.stamina <= 0:
-        #print("You're out of stamina, try taking a quick rest")
+        character.logging_stamina -= 10
+        return node_destroyed(current_node, character)
+    elif character.logging_stamina <= 0:
+        print("You're out of stamina, try taking a quick rest")
     else:
         print("can't do that right now")
-    return current_node
+    return current_node, character
 
 
-def node_destroyed(current_node):
+def node_destroyed(current_node, character):
     if current_node.health <= 0:
-        collect_resource(current_node)
+        collect_resource(current_node, character)
         current_node.health = current_node.max_health
         print(f"you broke {current_node.name} {current_node.node_type}")
         print("your walking to your next node")
-        return spawn_node()
+        return spawn_node(), character
     else:
         print(f"{current_node.name} has {current_node.health} health left")
-    return current_node
+    return current_node, character
 
 
 
-def collect_resource(current_node):
-    if current_node.node_type == "ore" and current_node.health <= 0 and current_node.name in player1.inventory:
-        player1.inventory[current_node.name] += 10
+def collect_resource(current_node, character):
+    if current_node.node_type == "ore" and current_node.health <= 0 and current_node.name in character.inventory:
+        character.inventory[current_node.name] += 10
         print(f"you gained 10 {current_node.resource}")
-    elif current_node.node_type == "tree" and current_node.health <= 0 and current_node.name in player1.inventory:
-        player1.inventory[current_node.name] += 10
+        return character
+    elif current_node.node_type == "tree" and current_node.health <= 0 and current_node.name in character.inventory:
+        character.inventory[current_node.name] += 10
+        return character
     else:
         print("go to collect_resource()")
-
+    return character
 
 
 def spawn_node():
@@ -127,11 +130,6 @@ def spawn_node():
     current_node = random.choice(farmable)
     print(f"you find a {current_node.name} node")
     return current_node
-
-
-
-def node_info():
-    pass
 
 
 
@@ -145,28 +143,39 @@ def text(current_tool):
 
 
 
-def choose_character():
-    pass
-
-
-
 #make it so i get food from trees, then can eat the food for stamina, return back to eat()
-def rest():
-    if player1.stamina >= 0:
-        print("you sit down and take a short nap")
-        gained = player1.max_stamina - player1.stamina
-        player1.stamina = 100
-        print(f"you gained {gained} stamina")
+def rest(character):
+    if character.logging_stamina >= 0 or character.mining_stamina >= 0:
+        character.logging_stamina = character.max_logging_stamina
+        character.mining_stamina = character.max_mining_stamina
+        print(f"you sit down and take a short nap, you now have {character.max_logging_stamina} logging stamina and {character.max_mining_stamina} mining stamina")
     else:
-        print("You're not tired")
+        print("You don't need to rest")
 
 
-def access_inventory(current_tool):
-    print(player1.inventory)
+def access_inventory(current_tool, character):
+    print(character.inventory)
+    return character
 
 
 def craft():
     pass
+
+
+
+def choose_character():
+    character = ""
+    character = input("choose a character\n(lumberjack)(miner)\n")
+    if character == "lumberjack":
+        character = lumberjack
+        return character
+    elif character == "miner":
+        character = miner
+        return character
+    else:
+        print("you have to choose a character")
+    return character
+
 
 
 def choose_tool():
@@ -200,22 +209,22 @@ def swap_tool(current_tool):
 
 
 
-def work(current_tool, current_node):
+def work(current_tool, current_node, character):
     command = ""
     while command != "home":
         text(current_tool)
         #current_node = spawn_node() #FIX THIS IT RESETS THE ORE EVERYTIME
         command = input()
-        if command in {"swap", "swap tool", "swaptool"}: #tring a different way other than spamming, or statements. "in" checks each value to see if one matches
+        if command in {"swap", "swap tool", "swaptool"}: #trying a different way other than spamming, or statements. "in" checks each value to see if one matches
             current_tool = swap_tool(current_tool)
         elif command == "mine":
-            current_node = mine(current_tool, current_node)
+            current_node, character = mine(current_tool, current_node, character)
         elif command == "chop":
-            current_node = chop(current_tool, current_node)
+            current_node, character = chop(current_tool, current_node, character)
         elif command == "rest":
-            rest()
+            rest(character)
         elif command == "inv":
-            access_inventory(current_tool)
+            access_inventory(current_tool, character)
         elif command == "home":
             print("Going Home!")
             break
