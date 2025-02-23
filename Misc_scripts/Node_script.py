@@ -45,7 +45,6 @@ class Tools():
 lumberjack = Player("", 100, 60, 160, 60, 160)
 miner = Player("", 100, 160, 60, 160, 60)
 
-
 #nodes
 #ores
 iron = Nodes("ore", "iron", 60, 60, 2, 1, "iron_ore")
